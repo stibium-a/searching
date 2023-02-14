@@ -1,0 +1,13 @@
+.dialog-block-userPic{
+  display: flex;
+  justify-content: center;
+}
+
+.dialog-user-image{
+  width: 150px;
+}
+
+.dialog-userName-span{
+  color: #fff;
+  font-size: 20px;
+}

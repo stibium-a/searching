@@ -1,0 +1,134 @@
+<mat-toolbar>
+    <div class="logo">
+        <a href="" class="logo-Link">
+            <mat-icon class="toolbar-logo-icon" aria-hidden="false" aria-label="public icon" fontIcon="public"
+                color='warn'></mat-icon>
+        </a>
+    </div>
+    <div class="search-block">
+        <mat-form-field class="example-form-field">
+            <mat-label>Search repository...</mat-label>
+            <input matInput type="text" [(ngModel)]="searchValue" (input)="findRepository(searchValue)">
+            <button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear"
+                (click)="searchValue=''; sortedReposArray = []; noSearchResults=false">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+    </div>
+    <div class="nav">
+        <mat-button-toggle-group>
+            <mat-button-toggle value="home" checked
+                (click)="isSearchActive = false; paginator.firstPage(); getAllRepositories()">
+                Home
+            </mat-button-toggle>
+            <mat-button-toggle value="about">About</mat-button-toggle>
+            <mat-button-toggle value="contacts">Contacts</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+</mat-toolbar>
+
+<div class="spinner">
+    <mat-spinner *ngIf="spinnerVisible"></mat-spinner>
+</div>
+
+<div class="container">
+    <ng-container *ngIf="!isSearchActive; else searchResults">
+        <ng-container *ngFor="let repository of arrayOfRepositoriesPerPage">
+            <mat-card *ngIf="searchValue === '' || repository.name.toLowerCase().includes(searchValue)">
+                <!-- <mat-card *ngIf="searchValue === '' || findRepoName(searchValue)"> -->
+                <mat-card-header class="card-header">Repository data:</mat-card-header>
+                <mat-card-content>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Repository name:</span>
+                        <span class="user-value">{{ repository.name }}</span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Owner login:</span>
+                        <span class="user-value">{{ repository.owner.login }}</span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Owner organizations:</span>
+                        <span class="user-value">
+                            <a class="user-orgainzation-link" href="{{ repository.owner.organizations_url }}">
+                                Organizatios
+                            </a>
+                        </span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Repos:</span>
+                        <span class="user-value">
+                            <a class="user-starred_link" href="{{ repository.owner.repos_url }}" target="_blank"
+                                rel="noopener noreferrer">
+                                Repos
+                            </a>
+                        </span>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button color="accent" (click)="getInfoAboutUser(repository); openDialog()">See
+                        more</button>
+                    <button mat-raised-button color="warn">Button_2</button>
+                </mat-card-actions>
+            </mat-card>
+        </ng-container>
+    </ng-container>
+
+    <ng-template #searchResults>
+        <ng-container>
+
+            <p class="template-noResultTitle" *ngIf="noSearchResults && !sortedReposArray.length">
+                No Results Match!
+            </p>
+
+            <mat-card *ngFor="let repository of sortedReposArray">
+                <!-- <mat-card *ngIf="searchValue === '' || findRepoName(searchValue)"> -->
+                <mat-card-header class="card-header">Repository data:</mat-card-header>
+                <mat-card-content>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Repository name:</span>
+                        <span class="user-value">{{ repository.name }}</span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Owner login:</span>
+                        <span class="user-value">{{ repository.owner.login }}</span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Owner organizations:</span>
+                        <span class="user-value">
+                            <a class="user-orgainzation-link" href="{{ repository.owner.organizations_url }}">
+                                Organizatios
+                            </a>
+                        </span>
+                    </div>
+                    <div class="content-item userName">
+                        <span class="user-paramter">Repos:</span>
+                        <span class="user-value">
+                            <a class="user-starred_link" href="{{ repository.owner.repos_url }}" target="_blank"
+                                rel="noopener noreferrer">
+                                Repos
+                            </a>
+                        </span>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button color="accent" 
+                    (click)="getInfoAboutUser(repository); openDialog()">
+                        See more
+                    </button>
+                    <button mat-raised-button color="warn">
+                        Button_2
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </ng-container>
+    </ng-template>
+</div>
+
+<mat-paginator #paginator 
+    [length]="length" 
+    [pageSize]="numberOfItemsPerPage" 
+    [pageSizeOptions]="[5, 10]"
+    (page)="handlePageEvent($event)" 
+    aria-label="Select page">
+</mat-paginator>
